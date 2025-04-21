@@ -2,35 +2,16 @@
     <h1 class="cards-title">Cartes</h1>
   
     <div class="card-panel">
-      <!-- Mauvaise réponse -->
-      <button class="card-btn card-btn--fail" aria-label="Je n'ai pas retenu">
+      <!-- ─────────── Bouton « mauvaise réponse » -->
+      <button id="btn-fail" class="card-btn card-btn--fail" aria-label="Je n'ai pas retenu">
         <img src="assets/icons/cross.svg" alt="">
       </button>
   
-      <!-- Carte -->
-      <!-- Carte recto‑verso -->
-        <article class="flashcard" id="flashcard">
-            <div class="flashcard__inner">
-            <!-- Face question -->
-            <div class="flashcard__face flashcard__front">
-                <p class="flashcard__text">
-                Quelle est la différence entre Green IT et IT for Green ?
-                </p>
-            </div>
-        
-            <!-- Face réponse -->
-            <div class="flashcard__face flashcard__back">
-                <p class="flashcard__text">
-                <strong>Green IT :</strong> réduire l’impact environnemental du numérique.<br>
-                <strong>IT for Green :</strong> mettre le numérique au service de la transition.
-                </p>
-            </div>
-            </div>
-        </article>
+      <!-- ─────────── Conteneur où les cartes seront injectées -->
+      <div id="card-container" class="card-wrapper"></div>
   
-  
-      <!-- Bonne réponse -->
-      <button class="card-btn card-btn--success" aria-label="Je connais la réponse">
+      <!-- ─────────── Bouton « bonne réponse » -->
+      <button id="btn-success" class="card-btn card-btn--success" aria-label="Je connais la réponse">
         <img src="assets/icons/check.svg" alt="">
       </button>
     </div>

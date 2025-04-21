@@ -143,12 +143,13 @@ a{text-decoration:none;color:inherit;}
   flex:1;
   display:flex;
   flex-direction:column;
-  justify-content:center;          /* centre la section cartes */
+  justify-content:flex-start;          /* centre la section cartes */
   background:var(--color-accent);
 }
 
 /* --- wrapper interne --------------------------------------------------- */
 .cards-page{
+  flex:1;
   padding:48px 16px 64px;          /* padding bas réduit */
   display:flex;
   flex-direction:column;
@@ -165,11 +166,21 @@ a{text-decoration:none;color:inherit;}
 
 /* --- zone (❌ carte ✔) -------------------------------------------------- */
 .card-panel{
+  flex: 1;
   display:flex;
   align-items:center;
   gap:32px;
   width:100%;
   max-width:900px;
+}
+
+/* ==== wrapper des cartes : prend tout l'espace entre les boutons ==== */
+.card-wrapper,
+#card-container {
+  flex: 1;                        /* remplit l'espace horizontal restant */
+  display: flex;                  /* flex interne pour centrer la carte */
+  justify-content: center;        /* centre horizontalement */
+  align-items: center;            /* centre verticalement */
 }
 
 /* --- boutons carrés ---------------------------------------------------- */
@@ -205,6 +216,18 @@ a{text-decoration:none;color:inherit;}
 .flashcard.is-flipped .flashcard__inner{transform:rotateY(180deg);}
 
 /* faces --------------------------------------------------------------- */
+.flashcard__face {
+  display: flex;
+  flex-direction: column;    /* empile chaque nœud (textes, <br>, etc.) verticalement */
+  justify-content: center;
+  align-items: center;
+}
+
+/* pour que le verso (réponse) colle à gauche du conteneur */
+.flashcard__back {
+  align-items: flex-start;
+}
+
 .flashcard__face{
   position:absolute;top:0;left:0;
   width:100%;height:100%;
@@ -269,4 +292,23 @@ a{text-decoration:none;color:inherit;}
   .flashcard__face{padding:0 24px;}
   .flashcard__text{font-size:24px;}
   .card-btn{width:72px;height:72px;}
+}
+
+/* ==== Animations swipe =============================================== */
+.flashcard{
+  transition:transform .35s ease, opacity .35s ease;
+}
+
+.swipe-right{
+  transform:translateX(120%);
+  opacity:0;
+}
+.swipe-left{
+  transform:translateX(-120%);
+  opacity:0;
+}
+
+/* préfère : moins d’animations */
+@media (prefers-reduced-motion:reduce){
+  .flashcard{transition:none;}
 }

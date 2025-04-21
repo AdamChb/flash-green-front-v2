@@ -31,4 +31,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   /* Lazy‑load des images (s’il existe) */
   if (window.initLazyLoad) window.initLazyLoad();
+
+  document.dispatchEvent(new Event('cards-ready'));
 });
