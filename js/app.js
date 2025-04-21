@@ -1,27 +1,34 @@
-// Charge un fragment HTML dans le conteneur #id
+/* ---------- js/app.js ---------- */
+
+/* Charge un fragment HTML dans le conteneur #id -------------------------- */
 async function loadComponent(id, url) {
-    try {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(res.statusText);
-      document.getElementById(id).innerHTML = await res.text();
-    } catch (e) {
-      console.error(`Erreur chargement ${url}:`, e);
-    }
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(res.statusText);
+
+    const target = document.getElementById(id);   // vérifie que l’élément existe
+    if (target) target.innerHTML = await res.text();
+  } catch (e) {
+    console.error(`Erreur chargement ${url} :`, e);
   }
-  
-  document.addEventListener('DOMContentLoaded', async () => {
-    // 1) On injecte tous les composants en parallèle
-    await Promise.all([
-      loadComponent('header', 'components/header.html'),
-      loadComponent('hero',   'components/hero.html'),
-      loadComponent('howto',  'components/howto.html'),
-      loadComponent('cta',    'components/cta.html'),
-      loadComponent('footer', 'components/footer.html'),
-    ]);
-  
-    // 2) Une fois injectés, on initialise le lazy‑load
-    if (window.initLazyLoad) {
-      window.initLazyLoad();
-    }
-  });
-  
+}
+
+/* Injection des composants une fois le DOM prêt ------------------------- */
+document.addEventListener('DOMContentLoaded', async () => {
+  await Promise.all([
+    /* commun à toutes les pages */
+    loadComponent('header', 'components/header.html'),
+    loadComponent('footer', 'components/footer.html'),
+
+    /* page d’accueil */
+    loadComponent('hero',   'components/hero.html'),
+    loadComponent('howto',  'components/howto.html'),
+    loadComponent('cta',    'components/cta.html'),
+
+    /* page Cartes */
+    loadComponent('cards',  'components/cards.html')
+  ]);
+
+  /* Lazy‑load des images (s’il existe) */
+  if (window.initLazyLoad) window.initLazyLoad();
+});
