@@ -17,6 +17,8 @@ async function loadComponent(id, url) {
       loadComponent('howto',  'components/howto.html'),
       loadComponent('cta',    'components/cta.html'),
       loadComponent('footer', 'components/footer.html'),
+      loadComponent('login',    'components/login.html'),
+      loadComponent('register', 'components/register.html')
     ]);
   
     // 2) Une fois injectés, on initialise le lazy‑load
