@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadComponent('cta',    'components/cta.html'),
 
     /* page Cartes */
-    loadComponent('cards',  'components/cards.html')
+    loadComponent('cards',  'components/cards.html'),
     
     /* pages account */
     loadComponent('login',    'components/login.html'),
