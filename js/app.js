@@ -27,6 +27,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     /* page Cartes */
     loadComponent('cards',  'components/cards.html')
+    
+    /* pages account */
+    loadComponent('login',    'components/login.html'),
+    loadComponent('register', 'components/register.html')
   ]);
 
   /* Lazy‑load des images (s’il existe) */
