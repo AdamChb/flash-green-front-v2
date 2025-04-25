@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     /* page Cartes */
     loadComponent('cards',  'components/cards.html'),
+    loadComponent('admin',   'components/admin.html'),
     
     /* pages account */
     loadComponent('login',    'components/login.html'),
@@ -37,4 +38,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (window.initLazyLoad) window.initLazyLoad();
 
   document.dispatchEvent(new Event('cards-ready'));
+  document.dispatchEvent(new Event('admin-ready'));
 });

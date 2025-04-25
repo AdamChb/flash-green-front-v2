@@ -339,6 +339,130 @@ a {
 .flashcard__back { text-align:left;   }
 
 /* ============================================================================
+   X.  ADMIN PANEL
+============================================================================ */
+/* 1) Le conteneur racine #admin doit pousser le footer en bas */
+#admin {
+  flex: 1;
+  display: flex;
+  justify-content: center;      /* centre horizontalement */
+  align-items: flex-start;      /* colle en haut */
+  background: var(--color-bg);  /* toujours votre vert pâle */
+  padding: 32px 16px;           /* un peu d’air tout autour */
+}
+
+/* 2) On transforme .admin-page en “carte” blanche centrée */
+.admin-page {
+  width: 100%;
+  max-width: 1000px;
+  background: #fff;             /* fond blanc */
+  border-radius: var(--radius);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Titre principal */
+.admin-title {
+  font-size: 2.5rem;
+  margin: 0;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+/* Onglets */
+.admin-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+.admin-tab {
+  padding: 8px 20px;
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.admin-tab.is-active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+/* Panel commun aux deux onglets */
+.admin-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.admin-panel.is-hidden {
+  display: none;
+}
+
+/* Tableau de données */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.admin-table th,
+.admin-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+.admin-table thead th {
+  border-bottom: 2px solid #ddd;
+  font-weight: 600;
+}
+.admin-table tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* Boutons d’action */
+.btn-small {
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius);
+  background: #fff;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.btn-small:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
+.btn-danger {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+.btn-danger:hover {
+  background: #e74c3c;
+  color: #fff;
+}
+
+/* Bouton “+ ajouter” */
+#add-user,
+#add-card {
+  align-self: flex-start;
+  margin-top: 8px;
+  background: var(--color-accent);
+  border: none;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+#add-user:hover,
+#add-card:hover {
+  opacity: 0.85;
+}
+
+
+/* ============================================================================
    8.  FOOTER
 ============================================================================ */
 .footer{
