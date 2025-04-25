@@ -6,13 +6,13 @@ document.addEventListener("cards-ready", initFlashCards);
 function initFlashCards() {
   const token = localStorage.getItem("token");
   /* --------- Cartes ------------------------------------ */
-  /*  const deck = fetch("https://flash-green.api.arcktis.fr/api/questions/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-     },
-    });*/
+  const deck = fetch("https://flash-green.api.arcktis.fr/api/questions/", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+  });
 
   /* --------- références DOM -------------------------------------- */
   const container = document.getElementById("card-container");
