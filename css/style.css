@@ -339,7 +339,115 @@ a {
 .flashcard__back { text-align:left;   }
 
 /* ============================================================================
-   8.  FOOTER
+   8. PAGE PROGRESSION
+============================================================================ */
+#progress {
+  flex: 1;                         /* pousse footer en bas */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--color-accent);
+  padding: 48px 16px 64px;
+}
+
+.progress-page {
+  max-width: 900px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.progress-title {
+  font-size: 48px;
+  margin: 0;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+/* 1. Résumé global */
+.progress-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.progress-summary p {
+  margin: 0;
+  font-size: 18px;
+}
+.progress-bar {
+  background: #eee;
+  border-radius: var(--radius);
+  overflow: hidden;
+  height: 16px;
+}
+.progress-fill {
+  background: var(--color-primary);
+  height: 100%;
+  width: 0;              /* ajusté en ligne en mockup */
+  transition: width .3s ease;
+}
+
+/* 2. Tableau « À revoir » */
+.progress-panel {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.05);
+}
+.progress-panel h2 {
+  margin-top: 0;
+  font-size: 24px;
+}
+.progress-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+.progress-table th,
+.progress-table td {
+  padding: 12px 8px;
+  text-align: left;
+  font-size: 16px;
+}
+.progress-table thead th {
+  border-bottom: 2px solid #ddd;
+}
+.progress-table tbody tr + tr td {
+  border-top: 1px solid #eee;
+}
+
+/* 3. Bouton d’action dans le tableau */
+.btn-small {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: opacity .2s;
+}
+.btn-small:hover {
+  opacity: 0.85;
+}
+
+/* Ajustements responsive */
+@media(max-width:768px){
+  .progress-page {
+    padding: 24px 8px 48px;
+    gap: 24px;
+  }
+  .progress-title{ font-size:36px; }
+  .progress-summary p, .progress-table th, .progress-table td {
+    font-size:14px;
+  }
+  .progress-panel { padding:16px; }
+}
+
+
+/* ============================================================================
+   9.  FOOTER
 ============================================================================ */
 .footer{
   background:#fff;
@@ -351,7 +459,7 @@ a {
 .footer__text{font-size:14px;margin:0;}
 
 /* ============================================================================
-   9.  MEDIA QUERIES
+   10.  MEDIA QUERIES
 ============================================================================ */
 
 /* ≥769px : Desktop ------------------------------------------------------ */
