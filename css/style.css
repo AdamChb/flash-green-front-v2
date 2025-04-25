@@ -385,6 +385,24 @@ a {
   .card-btn{width:72px;height:72px;}
 }
 
+@media (max-width: 768px) {
+  /* on garde déjà votre flex-direction:column et le gap */
+  .card-panel {
+    width: 100%;         /* bien prendre toute la largeur du container */
+    padding: 0 16px;     /* on ajoute un petit padding pour souffler */
+    align-items: center; /* centrer boutons ET carte */
+  }
+  .card-wrapper {
+    width: 100%;         /* full-width pour le wrapper */
+  }
+  .flashcard {
+    width: 100%;         /* full-width pour la carte */
+    max-width: none;     /* on supprime la limite à 900px */
+    min-height: 220px;   /* conserve votre hauteur mini */
+  }
+}
+
+
 /* ==== Animations swipe =============================================== */
 .flashcard{
   transition:transform .35s ease, opacity .35s ease;
