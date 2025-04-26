@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     /* page Cartes */
     loadComponent('cards',  'components/cards.html'),
+    loadComponent('progress', 'components/progress.html'),
     loadComponent('admin',   'components/admin.html'),
     
     /* pages account */
