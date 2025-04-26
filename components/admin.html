@@ -1,0 +1,57 @@
+<section id="admin" class="admin-page">
+    <h1 class="admin-title">Panneau d’administration</h1>
+  
+    <!-- onglets -->
+    <div class="admin-tabs">
+      <button class="admin-tab is-active" data-target="users-panel">Utilisateurs</button>
+      <button class="admin-tab"           data-target="cards-panel">Cartes</button>
+    </div>
+  
+    <!-- panel Utilisateurs -->
+    <div id="users-panel" class="admin-panel">
+      <h2>Gestion des utilisateurs</h2>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Nom</th><th>Prénom</th><th>Email</th><th>Rôle</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- mockup -->
+          <tr>
+            <td>Dupont</td><td>Marie</td><td>marie.dupont@example.com</td><td>Utilisateur</td>
+            <td>
+              <button class="btn-small">Éditer</button>
+              <button class="btn-small btn-danger">Supprimer</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button id="add-user" class="btn-small">+ Ajouter un utilisateur</button>
+    </div>
+  
+    <!-- panel Cartes -->
+    <div id="cards-panel" class="admin-panel is-hidden">
+      <h2>Gestion des cartes</h2>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Question</th><th>Réponse</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- mockup -->
+          <tr>
+            <td>Qu’est-ce que le Green IT ?</td>
+            <td>Réduire l’impact environnemental du numérique</td>
+            <td>
+              <button class="btn-small">Éditer</button>
+              <button class="btn-small btn-danger">Supprimer</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button id="add-card" class="btn-small">+ Ajouter une carte</button>
+    </div>
+  </section>
+  
