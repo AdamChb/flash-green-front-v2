@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const password = new_password; // Use the new password for login
 
-      fetch("https://flash-green.api.arcktis.fr/api/auth/login", {
+      fetch("https://flash-green.api.arcktis.fr/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
