@@ -174,32 +174,44 @@ function initModals(token) {
 async function onSubmitUser(e, token) {
   e.preventDefault();
   const form = e.target;
-  const id = form.dataset.id;
+  const id    = form.dataset.id;
+
+  // Construction du payload commun
   const payload = {
     username: form.elements.pseudo.value,
-    email: form.elements.email.value,
-    role: parseInt(form.elements.role.value, 10),
+    email:    form.elements.email.value,
+    role:     parseInt(form.elements.role.value, 10)
   };
-  const url = id ? `${API_BASE}/admin/users/${id}` : `${API_BASE}/admin/users`;
-  const method = id ? "PUT" : "POST";
+
+  // Si création, on ajoute le mot de passe
+  let url, method;
+  if (id) {
+    url    = `${API_BASE}/admin/users/${id}`;
+    method = 'PUT';
+  } else {
+    payload.password = form.elements.password.value;   // <-- mot de passe requis
+    url    = `${API_BASE}/admin/users`;
+    method = 'POST';
+  }
 
   const res = await fetch(url, {
     method,
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      'Content-Type':'application/json',
+      'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload)
   });
+
   if (!res.ok) {
-    alert(`Erreur ${method} utilisateur : ${res.statusText}`);
+    alert(`Erreur ${method} utilisateur : ${res.status} ${res.statusText}`);
     return;
   }
+
   closeAllModals();
-  const activeTab = document.querySelector(".admin-tab.is-active").dataset
-    .target;
+  // on recharge la liste tout en conservant l’onglet actif
+  const activeTab = document.querySelector('.admin-tab.is-active').dataset.target;
   await loadUsers(token);
-  // repasser sur l’onglet Users si nécessaire
   document.querySelector(`[data-target="${activeTab}"]`).click();
 }
 
