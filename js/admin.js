@@ -1,8 +1,13 @@
 const API_BASE = "https://flash-green.api.arcktis.fr/api";
-const token = localStorage.getItem("token");
-if (!token) return (window.location.href = "login.html");
 
 document.addEventListener("admin-ready", async () => {
+  // On récupère le token et on redirige si absent
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
+
   initTabs();
   try {
     await loadUsers(token);
@@ -10,8 +15,11 @@ document.addEventListener("admin-ready", async () => {
     initModals(token);
   } catch (err) {
     console.error(err);
-    if (err.status === 401) window.location.href = "login.html";
-    else alert("Erreur admin : " + err.message);
+    if (err.status === 401) {
+      window.location.href = "login.html";
+    } else {
+      alert("Erreur admin : " + err.message);
+    }
   }
 });
 
@@ -162,7 +170,6 @@ function initModals(token) {
     .querySelectorAll(".btn-cancel")
     .forEach((b) => b.addEventListener("click", closeAllModals));
 
-  // Hook des formulaires
   document
     .getElementById("user-form")
     .addEventListener("submit", (e) => onSubmitUser(e, token));
@@ -174,43 +181,39 @@ function initModals(token) {
 async function onSubmitUser(e, token) {
   e.preventDefault();
   const form = e.target;
-  const id    = form.dataset.id;
-
-  // Construction du payload commun
+  const id = form.dataset.id;
   const payload = {
     username: form.elements.pseudo.value,
-    email:    form.elements.email.value,
-    role:     parseInt(form.elements.role.value, 10)
+    email: form.elements.email.value,
+    role: parseInt(form.elements.role.value, 10),
   };
 
-  // Si création, on ajoute le mot de passe
   let url, method;
   if (id) {
-    url    = `${API_BASE}/admin/users/${id}`;
-    method = 'PUT';
+    url = `${API_BASE}/admin/users/${id}`;
+    method = "PUT";
   } else {
-    payload.password = form.elements.password.value;   // <-- mot de passe requis
-    url    = `${API_BASE}/admin/users`;
-    method = 'POST';
+    // pour la création, il faut aussi un mot de passe :
+    payload.password = form.elements.password.value;
+    url = `${API_BASE}/admin/users`;
+    method = "POST";
   }
 
   const res = await fetch(url, {
     method,
     headers: {
-      'Content-Type':'application/json',
-      'Authorization': `Bearer ${token}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
 
   if (!res.ok) {
     alert(`Erreur ${method} utilisateur : ${res.status} ${res.statusText}`);
     return;
   }
-
   closeAllModals();
-  // on recharge la liste tout en conservant l’onglet actif
-  const activeTab = document.querySelector('.admin-tab.is-active').dataset.target;
+  const activeTab = document.querySelector(".admin-tab.is-active").dataset.target;
   await loadUsers(token);
   document.querySelector(`[data-target="${activeTab}"]`).click();
 }
@@ -223,7 +226,9 @@ async function onSubmitCard(e, token) {
     title: form.elements.question.value,
     content: form.elements.answer.value,
   };
-  const url = id ? `${API_BASE}/questions/${id}` : `${API_BASE}/questions`;
+  const url = id
+    ? `${API_BASE}/questions/${id}`
+    : `${API_BASE}/questions`;
   const method = id ? "PUT" : "POST";
 
   const res = await fetch(url, {
@@ -239,8 +244,7 @@ async function onSubmitCard(e, token) {
     return;
   }
   closeAllModals();
-  const activeTab = document.querySelector(".admin-tab.is-active").dataset
-    .target;
+  const activeTab = document.querySelector(".admin-tab.is-active").dataset.target;
   await loadCards(token);
   document.querySelector(`[data-target="${activeTab}"]`).click();
 }
@@ -255,16 +259,13 @@ function openModal(modalId, title) {
 }
 
 function closeAllModals() {
-  document
-    .querySelectorAll(".modal")
-    .forEach((m) => m.classList.remove("active"));
+  document.querySelectorAll(".modal").forEach((m) => m.classList.remove("active"));
 }
 
 function roleLabel(code) {
-  return (
-    { 0: "Admin", 1: "Enseignant", 2: "Utilisateur" }[code] || "Utilisateur"
-  );
+  return { 0: "Admin", 1: "Enseignant", 2: "Utilisateur" }[code] || "N/A";
 }
+
 function roleCode(label) {
   return { Admin: 0, Enseignant: 1, Utilisateur: 2 }[label] ?? 2;
 }
