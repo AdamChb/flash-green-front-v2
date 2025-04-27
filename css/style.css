@@ -338,6 +338,21 @@ a {
 .flashcard__front{ text-align:center; }
 .flashcard__back { text-align:left;   }
 
+.cards-progress-btn {
+  display: inline-block;
+  margin-bottom: 24px;
+  font-size: 18px;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  transition: background .2s, color .2s;
+}
+.cards-progress-btn:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
+
 /* ============================================================================
    8. PAGE PROGRESSION
 ============================================================================ */
@@ -433,38 +448,112 @@ a {
 }
 
 /* ============================================================================
-   9. ADMIN PANEL
+   9.  ADMIN PANEL
 ============================================================================ */
-/* 1) Le conteneur racine #admin doit pousser le footer en bas */
-#admin {
-  flex: 1;
-  display: flex;
-  justify-content: center;      /* centre horizontalement */
-  align-items: flex-start;      /* colle en haut */
-  background: var(--color-bg);  /* toujours votre vert pâle */
-  padding: 32px 16px;           /* un peu d’air tout autour */
-}
 
-/* 2) On transforme .admin-page en “carte” blanche centrée */
-.admin-page {
-  width: 100%;
-  max-width: 1000px;
-  background: #fff;             /* fond blanc */
-  border-radius: var(--radius);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-/* Titre principal */
-.admin-title {
-  font-size: 2.5rem;
-  margin: 0;
-  color: var(--color-primary);
-  text-align: center;
-}
+/* 1) Le conteneur racine #admin doit pousser le footer en bas
+   et centrer horizontalement la “carte” blanche */
+   #admin {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: var(--color-bg);
+    padding: 32px 16px;
+  }
+  
+  /* 2) Carte blanche principale */
+  .admin-page {
+    width: 100%;
+    max-width: 1000px;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  /* Titre */
+  .admin-title {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    text-align: center;
+    margin: 0;
+  }
+  
+  /* Onglets */
+  .admin-tabs {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+  .admin-tab {
+    padding: 8px 16px;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--color-primary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  .admin-tab.is-active {
+    background: var(--color-primary);
+    color: #fff;
+  }
+  
+  /* Panels utilisateurs / cartes */
+  .admin-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .admin-panel.is-hidden {
+    display: none !important;
+  }
+  
+  /* Tables */
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+  }
+  .admin-table th,
+  .admin-table td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #eee;
+    font-size: 1rem;
+    text-align: left;
+  }
+  .admin-table thead th {
+    border-bottom: 2px solid #ddd;
+    font-weight: 600;
+  }
+  
+  /* Boutons dans l’admin */
+  .btn-small {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: opacity .2s;
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .btn-small:hover {
+    opacity: 0.85;
+  }
+  .btn-danger {
+    background: #FFB3B3;
+    margin-left: 8px;
+  }
+  .btn-danger:hover {
+    opacity: 0.85;
+  }
+  
 
 /* ============================================================================
    10.  FOOTER
