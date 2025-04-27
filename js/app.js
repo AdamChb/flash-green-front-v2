@@ -15,19 +15,26 @@ async function loadComponent(id, url) {
 /* Met à jour le bouton du header en fonction du token */
 function updateHeaderButton() {
   const token = localStorage.getItem("token");
-  const headerBtn = document.querySelector(".header__button");
-  if (!headerBtn) return;
+  const userRole = localStorage.getItem("userRole");
+  const loginBtn = document.querySelector("#header__login");
+  const adminBtn = document.querySelector("#header__admin");
+  if (!loginBtn) return;
 
   if (token) {
-    headerBtn.textContent = "Se déconnecter";
-    headerBtn.href = "#";
-    headerBtn.addEventListener("click", () => {
+    loginBtn.textContent = "Se déconnecter";
+    loginBtn.href = "#";
+    loginBtn.addEventListener("click", () => {
       localStorage.removeItem("token");
       window.location.href = "login.html";
     });
+    if (userRole === "0") {
+      adminBtn.classList.remove("is-hidden");
+      adminBtn.style.display = "flex";
+      adminBtn.href = "admin.html";
+    }
   } else {
-    headerBtn.textContent = "Se connecter";
-    headerBtn.href = "login.html";
+    loginBtn.textContent = "Se connecter";
+    loginBtn.href = "login.html";
   }
 }
 
