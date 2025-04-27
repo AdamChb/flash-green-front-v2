@@ -39,12 +39,10 @@ async function loadUsers(token) {
   const tbody = document.getElementById('users-tbody');
   tbody.innerHTML = '';
   users.forEach(u => {
-    const [last, first] = u.Pseudo.split(' ');
     const tr = document.createElement('tr');
     tr.dataset.id = u.ID_personne;
     tr.innerHTML = `
-      <td>${last}</td>
-      <td>${first||''}</td>
+      <td>${u.Pseudo}</td>
       <td>${u.Email}</td>
       <td>${roleLabel(u.Role_User)}</td>
       <td>
@@ -89,14 +87,13 @@ async function loadCards(token) {
 }
 
 function onEditUser(e) {
-  openModal('user-modal', 'Modifier un utilisateur');
   const tr = e.target.closest('tr');
+  openModal('user-modal', 'Modifier un utilisateur');
   const form = document.getElementById('user-form');
   form.dataset.id = tr.dataset.id;
-  form.lastName.value  = tr.children[0].textContent;
-  form.firstName.value = tr.children[1].textContent;
-  form.email.value     = tr.children[2].textContent;
-  form.role.value      = roleCode(tr.children[3].textContent);
+  form.elements.pseudo.value = tr.children[0].textContent;
+  form.elements.email.value  = tr.children[1].textContent;
+  form.elements.role.value   = roleCode(tr.children[2].textContent);
 }
 
 function onDeleteUser(e) {
@@ -116,12 +113,12 @@ function onDeleteUser(e) {
 }
 
 function onEditCard(e) {
-  openModal('card-modal', 'Modifier une carte');
   const tr = e.target.closest('tr');
+  openModal('card-modal', 'Modifier une carte');
   const form = document.getElementById('card-form');
   form.dataset.id = tr.dataset.id;
-  form.question.value = tr.children[0].textContent;
-  form.answer.value   = tr.children[1].textContent;
+  form.elements.question.value = tr.children[0].textContent;
+  form.elements.answer.value   = tr.children[1].textContent;
 }
 
 function onDeleteCard(e) {
@@ -148,7 +145,7 @@ function initModals() {
   document.querySelectorAll('.btn-cancel')
           .forEach(b => b.addEventListener('click', closeAllModals));
 
-  // you can hook your form submit here:
+  // TODO: Hook form submissions when vous serez prêt à appeler l'API :
   // document.getElementById('user-form').addEventListener('submit', onSubmitUser);
   // document.getElementById('card-form').addEventListener('submit', onSubmitCard);
 }

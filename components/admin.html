@@ -13,7 +13,7 @@
     <table class="admin-table">
       <thead>
         <tr>
-          <th>Nom</th><th>Prénom</th><th>Email</th><th>Rôle</th><th>Actions</th>
+          <th>Pseudo</th><th>Email</th><th>Rôle</th><th>Actions</th>
         </tr>
       </thead>
       <tbody id="users-tbody">
@@ -44,10 +44,8 @@
     <div class="modal-content">
       <h3 id="user-modal-title">Ajouter un utilisateur</h3>
       <form id="user-form">
-        <label>Nom :</label>
-        <input type="text" name="lastName" required>
-        <label>Prénom :</label>
-        <input type="text" name="firstName" required>
+        <label>Pseudo :</label>
+        <input type="text" name="pseudo" required>
         <label>Email :</label>
         <input type="email" name="email" required>
         <label>Rôle :</label>
@@ -56,7 +54,6 @@
           <option value="1">Enseignant</option>
           <option value="2" selected>Utilisateur</option>
         </select>
-        
         <div class="modal-actions">
           <button type="submit" class="btn-small">Enregistrer</button>
           <button type="button" class="btn-small btn-cancel">Annuler</button>
