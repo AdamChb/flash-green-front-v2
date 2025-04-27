@@ -49,12 +49,12 @@ function initProgress() {
 
           total = known.length + unknown.length;
           item_total = document.createElement("strong");
-          item_total.textContent = `${unknown.length} / ${total}`;
+          item_total.textContent = `${known.length} / ${total}`;
           count.appendChild(item_total);
 
           progress.style.width = `${(known.length / total) * 100}%`;
 
-          for (const item of data) {
+          for (const item of unknown) {
             const el = document.createElement("tr");
             el.innerHTML = `
                 <td>${item.Intitule}</td>
