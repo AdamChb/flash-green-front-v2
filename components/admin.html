@@ -1,57 +1,99 @@
 <section id="admin" class="admin-page">
-    <h1 class="admin-title">Panneau d’administration</h1>
-  
-    <!-- onglets -->
-    <div class="admin-tabs">
-      <button class="admin-tab is-active" data-target="users-panel">Utilisateurs</button>
-      <button class="admin-tab"           data-target="cards-panel">Cartes</button>
+  <h1 class="admin-title">Panneau d’administration</h1>
+
+  <!-- onglets -->
+  <div class="admin-tabs">
+    <button class="admin-tab is-active" data-target="users-panel">Utilisateurs</button>
+    <button class="admin-tab"           data-target="cards-panel">Cartes</button>
+  </div>
+
+  <!-- panel Utilisateurs -->
+  <div id="users-panel" class="admin-panel">
+    <h2>Gestion des utilisateurs</h2>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Nom</th><th>Prénom</th><th>Email</th><th>Rôle</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- mockup -->
+        <tr>
+          <td>Dupont</td><td>Marie</td><td>marie.dupont@example.com</td><td>Utilisateur</td>
+          <td>
+            <button class="btn-small btn-edit-user">Éditer</button>
+            <button class="btn-small btn-danger">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button id="add-user" class="btn-small">+ Ajouter un utilisateur</button>
+  </div>
+
+  <!-- panel Cartes -->
+  <div id="cards-panel" class="admin-panel is-hidden">
+    <h2>Gestion des cartes</h2>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Question</th><th>Réponse</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- mockup -->
+        <tr>
+          <td>Qu’est-ce que le Green IT ?</td>
+          <td>Réduire l’impact environnemental du numérique</td>
+          <td>
+            <button class="btn-small btn-edit-card">Éditer</button>
+            <button class="btn-small btn-danger">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button id="add-card" class="btn-small">+ Ajouter une carte</button>
+  </div>
+
+  <!-- Modal Utilisateur -->
+  <div id="user-modal" class="modal">
+    <div class="modal-content">
+      <h3 id="user-modal-title">Ajouter un utilisateur</h3>
+      <form id="user-form">
+        <label>Nom :</label>
+        <input type="text" name="lastName" required>
+        <label>Prénom :</label>
+        <input type="text" name="firstName" required>
+        <label>Email :</label>
+        <input type="email" name="email" required>
+        <label>Rôle :</label>
+        <select name="role" required>
+          <option value="0">Admin</option>
+          <option value="1">Enseignant</option>
+          <option value="2" selected>Utilisateur</option>
+        </select>
+        
+        <div class="modal-actions">
+          <button type="submit" class="btn-small">Enregistrer</button>
+          <button type="button" class="btn-small btn-cancel">Annuler</button>
+        </div>
+      </form>
     </div>
-  
-    <!-- panel Utilisateurs -->
-    <div id="users-panel" class="admin-panel">
-      <h2>Gestion des utilisateurs</h2>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Nom</th><th>Prénom</th><th>Email</th><th>Rôle</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- mockup -->
-          <tr>
-            <td>Dupont</td><td>Marie</td><td>marie.dupont@example.com</td><td>Utilisateur</td>
-            <td>
-              <button class="btn-small">Éditer</button>
-              <button class="btn-small btn-danger">Supprimer</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <button id="add-user" class="btn-small">+ Ajouter un utilisateur</button>
+  </div>
+
+  <!-- Modal Carte -->
+  <div id="card-modal" class="modal">
+    <div class="modal-content">
+      <h3 id="card-modal-title">Ajouter une carte</h3>
+      <form id="card-form">
+        <label>Question :</label>
+        <textarea name="question" rows="3" required></textarea>
+        <label>Réponse :</label>
+        <textarea name="answer" rows="3" required></textarea>
+        <div class="modal-actions">
+          <button type="submit" class="btn-small">Enregistrer</button>
+          <button type="button" class="btn-small btn-cancel">Annuler</button>
+        </div>
+      </form>
     </div>
-  
-    <!-- panel Cartes -->
-    <div id="cards-panel" class="admin-panel is-hidden">
-      <h2>Gestion des cartes</h2>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Question</th><th>Réponse</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- mockup -->
-          <tr>
-            <td>Qu’est-ce que le Green IT ?</td>
-            <td>Réduire l’impact environnemental du numérique</td>
-            <td>
-              <button class="btn-small">Éditer</button>
-              <button class="btn-small btn-danger">Supprimer</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <button id="add-card" class="btn-small">+ Ajouter une carte</button>
-    </div>
-  </section>
-  
+  </div>
+</section>
