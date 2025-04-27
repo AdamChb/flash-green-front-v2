@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then((data) => {
           localStorage.setItem("token", data.token); // Store the token in local storage
-          localStorage.setItem("userId", data.userId); // Store the userId in local storage
+          localStorage.setItem("userId", data.user.id); // Store the userId in local storage
           window.location.href = "/cards.html";
         })
         .catch((error) => {

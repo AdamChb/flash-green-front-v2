@@ -61,7 +61,7 @@ function initProgress() {
                 <td>
                 <a href="card.html?id=${item.id}">
                 <button class="btn-small">Relire</button>
-                </a><
+                </a>
                 </td>
               `;
             content.appendChild(el);
