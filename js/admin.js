@@ -1,4 +1,3 @@
-// js/admin.js
 const API_BASE = 'https://flash-green.api.arcktis.fr/api';
 
 document.addEventListener('admin-ready', async () => {
@@ -9,7 +8,7 @@ document.addEventListener('admin-ready', async () => {
   try {
     await loadUsers(token);
     await loadCards(token);
-    initModals();
+    initModals(token);
   } catch (err) {
     console.error(err);
     if (err.status === 401) window.location.href = 'login.html';
@@ -22,7 +21,7 @@ function initTabs() {
   const panels = document.querySelectorAll('.admin-panel');
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.toggle('is-active', t===tab));
+      tabs.forEach(t => t.classList.toggle('is-active', t === tab));
       panels.forEach(p => p.classList.add('is-hidden'));
       document.getElementById(tab.dataset.target).classList.remove('is-hidden');
     });
@@ -137,7 +136,7 @@ function onDeleteCard(e) {
     .catch(err => alert('Erreur suppression : ' + err.message));
 }
 
-function initModals() {
+function initModals(token) {
   document.getElementById('add-user')
           .addEventListener('click', () => openModal('user-modal','Ajouter un utilisateur'));
   document.getElementById('add-card')
@@ -145,16 +144,79 @@ function initModals() {
   document.querySelectorAll('.btn-cancel')
           .forEach(b => b.addEventListener('click', closeAllModals));
 
-  // TODO: Hook form submissions when vous serez prêt à appeler l'API :
-  // document.getElementById('user-form').addEventListener('submit', onSubmitUser);
-  // document.getElementById('card-form').addEventListener('submit', onSubmitCard);
+  // Hook des formulaires
+  document.getElementById('user-form')
+          .addEventListener('submit', e => onSubmitUser(e, token));
+  document.getElementById('card-form')
+          .addEventListener('submit', e => onSubmitCard(e, token));
+}
+
+async function onSubmitUser(e, token) {
+  e.preventDefault();
+  const form = e.target;
+  const id    = form.dataset.id;
+  const payload = {
+    username: form.elements.pseudo.value,
+    email:    form.elements.email.value,
+    role:     parseInt(form.elements.role.value, 10)
+  };
+  const url    = id ? `${API_BASE}/admin/users/${id}` : `${API_BASE}/admin/users`;
+  const method = id ? 'PUT' : 'POST';
+
+  const res = await fetch(url, {
+    method,
+    headers: {
+      'Content-Type':'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) {
+    alert(`Erreur ${method} utilisateur : ${res.statusText}`);
+    return;
+  }
+  closeAllModals();
+  const activeTab = document.querySelector('.admin-tab.is-active').dataset.target;
+  await loadUsers(token);
+  // repasser sur l’onglet Users si nécessaire
+  document.querySelector(`[data-target="${activeTab}"]`).click();
+}
+
+async function onSubmitCard(e, token) {
+  e.preventDefault();
+  const form = e.target;
+  const id    = form.dataset.id;
+  const payload = {
+    title:   form.elements.question.value,
+    content: form.elements.answer.value
+  };
+  const url    = id ? `${API_BASE}/questions/${id}` : `${API_BASE}/questions`;
+  const method = id ? 'PUT' : 'POST';
+
+  const res = await fetch(url, {
+    method,
+    headers: {
+      'Content-Type':'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) {
+    alert(`Erreur ${method} carte : ${res.statusText}`);
+    return;
+  }
+  closeAllModals();
+  const activeTab = document.querySelector('.admin-tab.is-active').dataset.target;
+  await loadCards(token);
+  document.querySelector(`[data-target="${activeTab}"]`).click();
 }
 
 function openModal(modalId, title) {
-  const m = document.getElementById(modalId);
+  const m    = document.getElementById(modalId);
+  const form = m.querySelector('form');
   m.querySelector('h3').textContent = title;
-  m.querySelector('form').reset();
-  delete m.querySelector('form').dataset.id;
+  form.reset();
+  delete form.dataset.id;
   m.classList.add('active');
 }
 
@@ -163,7 +225,7 @@ function closeAllModals() {
 }
 
 function roleLabel(code) {
-  return { 0: 'Admin', 1: 'Enseignant', 2: 'Utilisateur' }[code] || 'N/A';
+  return { 0: 'Admin', 1: 'Enseignant', 2: 'Utilisateur' }[code] || 'Utilisateur';
 }
 function roleCode(label) {
   return { 'Admin':0, 'Enseignant':1, 'Utilisateur':2 }[label] ?? 2;
