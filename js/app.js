@@ -27,7 +27,7 @@ function updateHeaderButton() {
       localStorage.removeItem("token");
       window.location.href = "login.html";
     });
-    if (userRole === "0") {
+    if (userRole !== "0" && userRole !== "1") {
       adminBtn.classList.remove("is-hidden");
       adminBtn.style.display = "flex";
       adminBtn.href = "admin.html";
