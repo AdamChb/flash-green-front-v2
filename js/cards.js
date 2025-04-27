@@ -2,9 +2,12 @@
    Système de cartes — attend le signal “cards-ready” envoyé par app.js
 ------------------------------------------------------------------ */
 document.addEventListener("cards-ready", initFlashCards);
+const token = localStorage.getItem("token");
+if (!token) {
+  window.location.href = "login.html";
+}
 
 function validateQuestion(questionId, isValid) {
-  const token = localStorage.getItem("token");
   fetch(`https://flash-green.api.arcktis.fr/api/questions/validate`, {
     method: "POST",
     headers: {

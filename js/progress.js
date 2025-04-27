@@ -2,11 +2,15 @@
    Avancé des cartes — attend le signal “cards-ready” envoyé par app.js
 ------------------------------------------------------------------ */
 document.addEventListener("cards-ready", initProgress);
+const token = localStorage.getItem("token");
+if (!token) {
+  window.location.href = "login.html";
+}
 
 function initProgress() {
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
-
+  
   /* --------- Cartes ------------------------------------ */
   fetch("https://flash-green.api.arcktis.fr/api/questions/known/" + userId, {
     method: "GET",
