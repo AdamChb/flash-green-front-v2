@@ -20,11 +20,7 @@ Les personnes ayant travaillé sur cette partie du projet sont :
  - Eva : [eva.marot@efrei.net](mailto:eva.marot@efrei.net)
  - Sacha : [sacha.portal@efrei.net](mailto:sacha.portal@efrei.net)
 
-**Contribution :**
-La contribution au projet se fait dans des branches distinctes. Chaque branche a sont utilité.
-Les commits/pushs ne sont pas limités dans les branches mais un pull request doit être fait pour demander à ce que la branche soit merge dans le projet.
-
-## 📱Principales pages :
+## 📱 Principales pages :
 Le site comporte 5 pages principales :
  - La page d'Accueil : elle sert à présenter l'application Web aux visiteurs ;
  - Les pages S'inscrire/Se connecter ;
@@ -93,6 +89,6 @@ BREAKING CHANGE: …
 ## 🕒 Historique des contributions
 
 Pour consulter en détail l’historique de chaque membre :
-	•	Rendez-vous dans l’onglet Pull requests du dépôt.
-	•	Chaque PR liste les commits, les fichiers modifiés et les reviewers.
-	•	Vous y verrez qui a travaillé sur quelles fonctionnalités et quand.
+- Rendez-vous dans l’onglet Pull requests du dépôt.
+- Chaque PR liste les commits, les fichiers modifiés et les reviewers.
+- Vous y verrez qui a travaillé sur quelles fonctionnalités et quand.
