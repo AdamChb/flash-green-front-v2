@@ -9,6 +9,8 @@ if (!token) {
 
 function initProgress() {
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+  
   /* --------- Cartes ------------------------------------ */
   fetch("https://flash-green.api.arcktis.fr/api/questions/known/" + userId, {
     method: "GET",
@@ -50,8 +52,8 @@ function initProgress() {
           const content = document.querySelector("#progress-list");
           const progress = document.querySelector(".progress-fill");
 
-          total = known.length + unknown.length;
-          item_total = document.createElement("strong");
+          const total = known.length + unknown.length;
+          const item_total = document.createElement("strong");
           item_total.textContent = `${known.length} / ${total}`;
           count.appendChild(item_total);
 
@@ -61,11 +63,6 @@ function initProgress() {
             const el = document.createElement("tr");
             el.innerHTML = `
                 <td>${item.Intitule}</td>
-                <td>
-                <a href="card.html?id=${item.id}">
-                <button class="btn-small">Relire</button>
-                </a>
-                </td>
               `;
             content.appendChild(el);
           }

@@ -432,18 +432,21 @@ a {
   border-top: 1px solid #eee;
 }
 
-/* 3. Bouton d’action dans le tableau */
-.btn-small {
-  padding: 6px 12px;
+/* 3. Bouton redirigeant vers cards*/
+.btn-entrainer {
+  padding: 8px 16px;
   font-size: 14px;
+  text-decoration: none;
   border: none;
   background: var(--color-primary);
   color: #fff;
   border-radius: var(--radius);
   cursor: pointer;
   transition: opacity .2s;
+  margin-bottom: 20px;
+  display: inline-block;
 }
-.btn-small:hover {
+.btn-entrainer:hover {
   opacity: 0.8;
 }
 
