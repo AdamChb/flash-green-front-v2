@@ -43,7 +43,7 @@ function initProgress() {
         })
         .then((unknown) => {
           /* --------- références DOM -------------------------------------- */
-          const count = document.querySelector("#count");
+          const count = document.querySelector("#progress-count");
           const content = document.querySelector("#progress-list");
           const progress = document.querySelector(".progress-fill");
 
