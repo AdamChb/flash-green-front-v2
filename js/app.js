@@ -39,19 +39,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   ]);
   updateHeaderButton();
 
-  /* page d’accueil */
-  loadComponent("hero", "components/hero.html");
-  loadComponent("howto", "components/howto.html");
-  loadComponent("cta", "components/cta.html");
-
-  /* page Cartes */
-  loadComponent("cards", "components/cards.html");
-  loadComponent("progress", "components/progress.html");
-  loadComponent("admin", "components/admin.html");
-
-  /* pages account */
-  loadComponent("login", "components/login.html");
-  loadComponent("register", "components/register.html");
+  // 2) On injecte tous les autres fragments
+  await Promise.all([
+    loadComponent("hero", "components/hero.html"),
+    loadComponent("howto", "components/howto.html"),
+    loadComponent("cta", "components/cta.html"),
+    loadComponent("cards", "components/cards.html"),
+    loadComponent("progress", "components/progress.html"),
+    loadComponent("admin", "components/admin.html"),
+    loadComponent("login", "components/login.html"),
+    loadComponent("register", "components/register.html"),
+  ]);
 
   // 3) Hooks et animations
   if (window.initLazyLoad) window.initLazyLoad();
