@@ -3,6 +3,28 @@
 ------------------------------------------------------------------ */
 document.addEventListener("cards-ready", initFlashCards);
 
+function validateQuestion(questionId, isValid) {
+  const token = localStorage.getItem("token");
+  fetch(`https://flash-green.api.arcktis.fr/api/questions/validate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ questionId, isValid }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        console.error("HTTP error", response.status, response.statusText);
+        throw new Error("Network response was not ok " + response.statusText);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Erreur lors de l'enregistrement de la réponse :", error);
+    });
+}
+
 function initFlashCards() {
   const token = localStorage.getItem("token");
   /* --------- Cartes ------------------------------------ */
@@ -70,12 +92,15 @@ function initFlashCards() {
       });
 
       btnOK.addEventListener("click", () => {
+        const cur = queue[0];
+        validateQuestion(cur.Id, 1); // enregistre la réponse
         queue.shift(); // retire définitif
         swipe("right", showNext);
       });
 
       btnKO.addEventListener("click", () => {
         const cur = queue.shift();
+        validateQuestion(cur.Id, 0); // enregistre la réponse
         queue.push(cur); // remet à la fin
         swipe("left", showNext);
       });
