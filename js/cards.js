@@ -93,14 +93,14 @@ function initFlashCards() {
 
       btnOK.addEventListener("click", () => {
         const cur = queue[0];
-        validateQuestion(cur.Id, 1); // enregistre la réponse
+        validateQuestion(cur.ID_question, 1); // enregistre la réponse
         queue.shift(); // retire définitif
         swipe("right", showNext);
       });
 
       btnKO.addEventListener("click", () => {
         const cur = queue.shift();
-        validateQuestion(cur.Id, 0); // enregistre la réponse
+        validateQuestion(cur.ID_question, 0); // enregistre la réponse
         queue.push(cur); // remet à la fin
         swipe("left", showNext);
       });
