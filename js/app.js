@@ -13,31 +13,33 @@ async function loadComponent(id, url) {
   }
 }
 
-/* Injection des composants une fois le DOM prêt ------------------------- */
 document.addEventListener('DOMContentLoaded', async () => {
   await Promise.all([
-    /* commun à toutes les pages */
-    loadComponent('header', 'components/header.html'),
-    loadComponent('footer', 'components/footer.html'),
-
-    /* page d’accueil */
-    loadComponent('hero',   'components/hero.html'),
-    loadComponent('howto',  'components/howto.html'),
-    loadComponent('cta',    'components/cta.html'),
-
-    /* page Cartes */
-    loadComponent('cards',  'components/cards.html'),
-    loadComponent('progress', 'components/progress.html'),
-    loadComponent('admin',   'components/admin.html'),
-    
-    /* pages account */
-    loadComponent('login',    'components/login.html'),
-    loadComponent('register', 'components/register.html')
+    loadComponent('header',    'components/header.html'),
+    loadComponent('footer',    'components/footer.html'),
+    loadComponent('hero',      'components/hero.html'),
+    loadComponent('howto',     'components/howto.html'),
+    loadComponent('cta',       'components/cta.html'),
+    loadComponent('cards',     'components/cards.html'),
+    loadComponent('progress',  'components/progress.html'),
+    loadComponent('admin',     'components/admin.html'),
+    loadComponent('login',     'components/login.html'),
+    loadComponent('register',  'components/register.html'),
   ]);
 
-  /* Lazy‑load des images (s’il existe) */
   if (window.initLazyLoad) window.initLazyLoad();
-
   document.dispatchEvent(new Event('cards-ready'));
   document.dispatchEvent(new Event('admin-ready'));
+
+  // --- Gérer bouton déconnexion dans le header ---
+  const token     = localStorage.getItem('token');
+  const headerBtn = document.querySelector('.header__button');
+  if (headerBtn && token) {
+    headerBtn.textContent = 'Se déconnecter';
+    headerBtn.href        = '#';
+    headerBtn.addEventListener('click', () => {
+      localStorage.removeItem('token');
+      window.location.href = '/login.html';
+    });
+  }
 });
