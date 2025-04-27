@@ -1,16 +1,56 @@
+// js/admin.js
 const API_BASE = "https://flash-green.api.arcktis.fr/api";
 
 document.addEventListener("admin-ready", async () => {
-  // Récupère le token, redirige si absent
+  // 1) Récupère le token, redirige si absent
   const token = localStorage.getItem("token");
   if (!token) {
     window.location.href = "login.html";
     return;
   }
 
-  initTabs();
+  // 2) Récupère le profil pour déterminer le rôle
+  let profile;
   try {
-    await loadUsers(token);
+    const res = await fetch(`${API_BASE}/auth/profile`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error("Impossible de récupérer le profil");
+    profile = await res.json();
+  } catch (err) {
+    console.error(err);
+    window.location.href = "login.html";
+    return;
+  }
+
+  // 3) Gestion des accès selon le rôle
+  // role 2 (utilisateur) → accès interdit
+  if (profile.role === 2) {
+    alert("Accès réservé aux professeurs et administrateurs");
+    window.location.href = "cards.html";
+    return;
+  }
+
+  // role 1 (professeur) → on masque l'onglet Utilisateurs
+  if (profile.role === 1) {
+    const usersTab   = document.querySelector('.admin-tab[data-target="users-panel"]');
+    const usersPanel = document.getElementById("users-panel");
+    usersTab?.remove();
+    usersPanel?.remove();
+    // on active par défaut Cartes
+    document.querySelector('.admin-tab[data-target="cards-panel"]')
+            .classList.add("is-active");
+    document.getElementById("cards-panel")
+            .classList.remove("is-hidden");
+  }
+
+  initTabs();
+
+  // 4) Chargements conditionnels
+  try {
+    if (profile.role === 0) {
+      await loadUsers(token);
+    }
     await loadCards(token);
     initModals(token);
   } catch (err) {
@@ -21,20 +61,21 @@ document.addEventListener("admin-ready", async () => {
 });
 
 function initTabs() {
-  const tabs = document.querySelectorAll(".admin-tab");
+  const tabs   = document.querySelectorAll(".admin-tab");
   const panels = document.querySelectorAll(".admin-panel");
-  tabs.forEach((tab) => {
+  tabs.forEach(tab => {
     tab.addEventListener("click", () => {
-      tabs.forEach((t) => t.classList.toggle("is-active", t === tab));
-      panels.forEach((p) => p.classList.add("is-hidden"));
-      document.getElementById(tab.dataset.target).classList.remove("is-hidden");
+      tabs.forEach(t => t.classList.toggle("is-active", t === tab));
+      panels.forEach(p => p.classList.add("is-hidden"));
+      document.getElementById(tab.dataset.target)
+              .classList.remove("is-hidden");
     });
   });
 }
 
 async function loadUsers(token) {
   const res = await fetch(`${API_BASE}/admin/users`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) {
     const e = new Error(res.statusText);
@@ -42,10 +83,9 @@ async function loadUsers(token) {
     throw e;
   }
   const users = await res.json();
-
   const tbody = document.getElementById("users-tbody");
   tbody.innerHTML = "";
-  users.forEach((u) => {
+  users.forEach(u => {
     const tr = document.createElement("tr");
     tr.dataset.id = u.ID_personne;
     tr.innerHTML = `
@@ -58,18 +98,15 @@ async function loadUsers(token) {
       </td>`;
     tbody.appendChild(tr);
   });
-
-  document
-    .querySelectorAll(".btn-edit-user")
-    .forEach((btn) => btn.addEventListener("click", onEditUser));
-  document
-    .querySelectorAll(".btn-delete-user")
-    .forEach((btn) => btn.addEventListener("click", onDeleteUser));
+  document.querySelectorAll(".btn-edit-user")
+          .forEach(btn => btn.addEventListener("click", onEditUser));
+  document.querySelectorAll(".btn-delete-user")
+          .forEach(btn => btn.addEventListener("click", onDeleteUser));
 }
 
 async function loadCards(token) {
   const res = await fetch(`${API_BASE}/questions`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) {
     const e = new Error(res.statusText);
@@ -77,10 +114,9 @@ async function loadCards(token) {
     throw e;
   }
   const cards = await res.json();
-
   const tbody = document.getElementById("cards-tbody");
   tbody.innerHTML = "";
-  cards.forEach((q) => {
+  cards.forEach(q => {
     const tr = document.createElement("tr");
     tr.dataset.id = q.ID_question;
     tr.innerHTML = `
@@ -92,23 +128,20 @@ async function loadCards(token) {
       </td>`;
     tbody.appendChild(tr);
   });
-
-  document
-    .querySelectorAll(".btn-edit-card")
-    .forEach((btn) => btn.addEventListener("click", onEditCard));
-  document
-    .querySelectorAll(".btn-delete-card")
-    .forEach((btn) => btn.addEventListener("click", onDeleteCard));
+  document.querySelectorAll(".btn-edit-card")
+          .forEach(btn => btn.addEventListener("click", onEditCard));
+  document.querySelectorAll(".btn-delete-card")
+          .forEach(btn => btn.addEventListener("click", onDeleteCard));
 }
 
 function onEditUser(e) {
   const tr = e.target.closest("tr");
   openModal("user-modal", "Modifier un utilisateur");
   const form = document.getElementById("user-form");
-  form.dataset.id = tr.dataset.id;
+  form.dataset.id           = tr.dataset.id;
   form.elements.pseudo.value = tr.children[0].textContent;
-  form.elements.email.value = tr.children[1].textContent;
-  form.elements.role.value = roleCode(tr.children[2].textContent);
+  form.elements.email.value  = tr.children[1].textContent;
+  form.elements.role.value   = roleCode(tr.children[2].textContent);
 }
 
 function onDeleteUser(e) {
@@ -118,22 +151,19 @@ function onDeleteUser(e) {
   const token = localStorage.getItem("token");
   fetch(`${API_BASE}/admin/users/${id}`, {
     method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}` }
   })
-    .then((r) => {
-      if (!r.ok) throw new Error(r.statusText);
-      tr.remove();
-    })
-    .catch((err) => alert("Erreur suppression : " + err.message));
+    .then(r => { if (!r.ok) throw new Error(r.statusText); tr.remove(); })
+    .catch(err => alert("Erreur suppression : " + err.message));
 }
 
 function onEditCard(e) {
   const tr = e.target.closest("tr");
   openModal("card-modal", "Modifier une carte");
   const form = document.getElementById("card-form");
-  form.dataset.id = tr.dataset.id;
-  form.elements.question.value = tr.children[0].textContent;
-  form.elements.answer.value = tr.children[1].textContent;
+  form.dataset.id                   = tr.dataset.id;
+  form.elements.question.value      = tr.children[0].textContent;
+  form.elements.answer.value        = tr.children[1].textContent;
 }
 
 function onDeleteCard(e) {
@@ -143,73 +173,60 @@ function onDeleteCard(e) {
   const token = localStorage.getItem("token");
   fetch(`${API_BASE}/questions/${id}`, {
     method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}` }
   })
-    .then((r) => {
-      if (!r.ok) throw new Error(r.statusText);
-      tr.remove();
-    })
-    .catch((err) => alert("Erreur suppression : " + err.message));
+    .then(r => { if (!r.ok) throw new Error(r.statusText); tr.remove(); })
+    .catch(err => alert("Erreur suppression : " + err.message));
 }
 
 function initModals(token) {
-  document
-    .getElementById("add-user")
-    .addEventListener("click", () =>
-      openModal("user-modal", "Ajouter un utilisateur")
-    );
-  document
-    .getElementById("add-card")
-    .addEventListener("click", () =>
-      openModal("card-modal", "Ajouter une carte")
-    );
-  document
-    .querySelectorAll(".btn-cancel")
-    .forEach((b) => b.addEventListener("click", closeAllModals));
+  document.getElementById("add-user")
+          .addEventListener("click", () =>
+            openModal("user-modal", "Ajouter un utilisateur"));
+  document.getElementById("add-card")
+          .addEventListener("click", () =>
+            openModal("card-modal", "Ajouter une carte"));
+  document.querySelectorAll(".btn-cancel")
+          .forEach(b => b.addEventListener("click", closeAllModals));
 
-  document
-    .getElementById("user-form")
-    .addEventListener("submit", (e) => onSubmitUser(e, token));
-  document
-    .getElementById("card-form")
-    .addEventListener("submit", (e) => onSubmitCard(e, token));
+  document.getElementById("user-form")
+          .addEventListener("submit", (e) => onSubmitUser(e, token));
+  document.getElementById("card-form")
+          .addEventListener("submit", (e) => onSubmitCard(e, token));
 }
 
 async function onSubmitUser(e, token) {
   e.preventDefault();
   const form = e.target;
-  const id = form.dataset.id;
+  const id   = form.dataset.id;
   const payload = {
     username: form.elements.pseudo.value,
-    email: form.elements.email.value,
-    role: parseInt(form.elements.role.value, 10),
+    email:    form.elements.email.value,
+    role:     parseInt(form.elements.role.value, 10)
   };
-
   let url, method;
   if (id) {
-    url = `${API_BASE}/admin/users/${id}`;
+    // modification sans mot de passe
+    url    = `${API_BASE}/admin/users/${id}`;
     method = "PUT";
   } else {
-    // création : ajoute le mot de passe
+    // création → mot de passe requis
     payload.password = form.elements.password.value;
-    url = `${API_BASE}/admin/users`;
+    url    = `${API_BASE}/admin/users`;
     method = "POST";
   }
-
   const res = await fetch(url, {
     method,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "Authorization": `Bearer ${token}`
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload)
   });
-
   if (!res.ok) {
     alert(`Erreur ${method} utilisateur : ${res.status} ${res.statusText}`);
     return;
   }
-
   closeAllModals();
   const activeTab = document.querySelector(".admin-tab.is-active").dataset.target;
   await loadUsers(token);
@@ -221,27 +238,23 @@ async function onSubmitCard(e, token) {
   const form = e.target;
   const id = form.dataset.id;
   const payload = {
-    title: form.elements.question.value,
-    content: form.elements.answer.value,
+    title:   form.elements.question.value,
+    content: form.elements.answer.value
   };
-  const url = id
-    ? `${API_BASE}/questions/${id}`
-    : `${API_BASE}/questions`;
+  const url    = id ? `${API_BASE}/questions/${id}` : `${API_BASE}/questions`;
   const method = id ? "PUT" : "POST";
-
   const res = await fetch(url, {
     method,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "Authorization": `Bearer ${token}`
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload)
   });
   if (!res.ok) {
     alert(`Erreur ${method} carte : ${res.statusText}`);
     return;
   }
-
   closeAllModals();
   const activeTab = document.querySelector(".admin-tab.is-active").dataset.target;
   await loadCards(token);
@@ -249,36 +262,23 @@ async function onSubmitCard(e, token) {
 }
 
 function openModal(modalId, title) {
-  const m = document.getElementById(modalId);
+  const m    = document.getElementById(modalId);
   const form = m.querySelector("form");
-
-  // titre
   m.querySelector("h3").textContent = title;
-
-  // reset + preserve data-id only on "Modifier"
   form.reset();
   if (!title.startsWith("Modifier")) {
     delete form.dataset.id;
+    form.elements.password.required = true;
+    m.querySelector(".password-group")?.classList.remove("hidden");
+  } else {
+    form.elements.password.required = false;
+    m.querySelector(".password-group")?.classList.add("hidden");
   }
-
-  // show/hide password on user-modal
-  if (modalId === "user-modal") {
-    const pwGroup = form.querySelector(".password-group");
-    const pwInput = form.elements.password;
-    if (title.startsWith("Modifier")) {
-      pwGroup.classList.add("hidden");
-      pwInput.required = false;
-    } else {
-      pwGroup.classList.remove("hidden");
-      pwInput.required = true;
-    }
-  }
-
   m.classList.add("active");
 }
 
 function closeAllModals() {
-  document.querySelectorAll(".modal").forEach((m) => m.classList.remove("active"));
+  document.querySelectorAll(".modal").forEach(m => m.classList.remove("active"));
 }
 
 function roleLabel(code) {
