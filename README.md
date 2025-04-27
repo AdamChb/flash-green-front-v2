@@ -1,4 +1,4 @@
-# 🍃 FlashGreen - Frontent V2
+# 🍃 FlashGreen - Frontend V2
 
 ## 📃 Description du projet
 **FlashGreen** est un projet étudiant en 3e année d'ingénierie informatique dans le cadre du module "Green IT".
