@@ -1,7 +1,7 @@
 const API_BASE = "https://flash-green.api.arcktis.fr/api";
 
 document.addEventListener("admin-ready", async () => {
-  // On récupère le token et on redirige si absent
+  // Récupère le token, redirige si absent
   const token = localStorage.getItem("token");
   if (!token) {
     window.location.href = "login.html";
@@ -15,11 +15,8 @@ document.addEventListener("admin-ready", async () => {
     initModals(token);
   } catch (err) {
     console.error(err);
-    if (err.status === 401) {
-      window.location.href = "login.html";
-    } else {
-      alert("Erreur admin : " + err.message);
-    }
+    if (err.status === 401) window.location.href = "login.html";
+    else alert("Erreur admin : " + err.message);
   }
 });
 
@@ -193,7 +190,7 @@ async function onSubmitUser(e, token) {
     url = `${API_BASE}/admin/users/${id}`;
     method = "PUT";
   } else {
-    // pour la création, il faut aussi un mot de passe :
+    // création : ajoute le mot de passe
     payload.password = form.elements.password.value;
     url = `${API_BASE}/admin/users`;
     method = "POST";
@@ -212,6 +209,7 @@ async function onSubmitUser(e, token) {
     alert(`Erreur ${method} utilisateur : ${res.status} ${res.statusText}`);
     return;
   }
+
   closeAllModals();
   const activeTab = document.querySelector(".admin-tab.is-active").dataset.target;
   await loadUsers(token);
@@ -243,6 +241,7 @@ async function onSubmitCard(e, token) {
     alert(`Erreur ${method} carte : ${res.statusText}`);
     return;
   }
+
   closeAllModals();
   const activeTab = document.querySelector(".admin-tab.is-active").dataset.target;
   await loadCards(token);
@@ -252,9 +251,29 @@ async function onSubmitCard(e, token) {
 function openModal(modalId, title) {
   const m = document.getElementById(modalId);
   const form = m.querySelector("form");
+
+  // titre
   m.querySelector("h3").textContent = title;
+
+  // reset + preserve data-id only on "Modifier"
   form.reset();
-  delete form.dataset.id;
+  if (!title.startsWith("Modifier")) {
+    delete form.dataset.id;
+  }
+
+  // show/hide password on user-modal
+  if (modalId === "user-modal") {
+    const pwGroup = form.querySelector(".password-group");
+    const pwInput = form.elements.password;
+    if (title.startsWith("Modifier")) {
+      pwGroup.classList.add("hidden");
+      pwInput.required = false;
+    } else {
+      pwGroup.classList.remove("hidden");
+      pwInput.required = true;
+    }
+  }
+
   m.classList.add("active");
 }
 
@@ -265,7 +284,6 @@ function closeAllModals() {
 function roleLabel(code) {
   return { 0: "Admin", 1: "Enseignant", 2: "Utilisateur" }[code] || "N/A";
 }
-
 function roleCode(label) {
   return { Admin: 0, Enseignant: 1, Utilisateur: 2 }[label] ?? 2;
 }

@@ -4,7 +4,7 @@
   <!-- onglets -->
   <div class="admin-tabs">
     <button class="admin-tab is-active" data-target="users-panel">Utilisateurs</button>
-    <button class="admin-tab"           data-target="cards-panel">Cartes</button>
+    <button class="admin-tab" data-target="cards-panel">Cartes</button>
   </div>
 
   <!-- panel Utilisateurs -->
@@ -46,16 +46,23 @@
       <form id="user-form">
         <label>Pseudo :</label>
         <input type="text" name="pseudo" required>
+
         <label>Email :</label>
         <input type="email" name="email" required>
-        <label>Mot de passe :</label>
-        <input type="password" name="password" required>
+
+        <!-- Password group: shown only on "Ajouter" -->
+        <div class="password-group">
+          <label>Mot de passe :</label>
+          <input type="password" name="password" required>
+        </div>
+
         <label>Rôle :</label>
         <select name="role" required>
           <option value="0">Admin</option>
           <option value="1">Enseignant</option>
           <option value="2" selected>Utilisateur</option>
         </select>
+
         <div class="modal-actions">
           <button type="submit" class="btn-small">Enregistrer</button>
           <button type="button" class="btn-small btn-cancel">Annuler</button>
@@ -71,8 +78,10 @@
       <form id="card-form">
         <label>Question :</label>
         <textarea name="question" rows="3" required></textarea>
+
         <label>Réponse :</label>
         <textarea name="answer" rows="3" required></textarea>
+
         <div class="modal-actions">
           <button type="submit" class="btn-small">Enregistrer</button>
           <button type="button" class="btn-small btn-cancel">Annuler</button>
