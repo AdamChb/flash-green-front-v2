@@ -51,6 +51,7 @@ function initFlashCards() {
       const btnOK = document.getElementById("btn-success");
       const btnKO = document.getElementById("btn-fail");
       let queue = [...data]; // copie du deck
+      queue.sort(() => Math.random() - 0.5); // mélange le deck
 
       /* --------- helpers --------------------------------------------- */
       const createCard = ({ Intitule, Reponse }) => {
