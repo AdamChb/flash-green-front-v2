@@ -1,15 +1,20 @@
+// js/admin.js
 const API_BASE = 'https://flash-green.api.arcktis.fr/api';
 
 document.addEventListener('admin-ready', async () => {
   const token = localStorage.getItem('token');
-  if (!token) {
-    return window.location.href = 'login.html';
-  }
+  if (!token) return window.location.href = 'login.html';
 
   initTabs();
-  await loadUsers();
-  await loadCards();
-  initModals();
+  try {
+    await loadUsers(token);
+    await loadCards(token);
+    initModals();
+  } catch (err) {
+    console.error(err);
+    if (err.status === 401) window.location.href = 'login.html';
+    else alert('Erreur admin : ' + err.message);
+  }
 });
 
 function initTabs() {
@@ -17,30 +22,29 @@ function initTabs() {
   const panels = document.querySelectorAll('.admin-panel');
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('is-active'));
-      tab.classList.add('is-active');
+      tabs.forEach(t => t.classList.toggle('is-active', t===tab));
       panels.forEach(p => p.classList.add('is-hidden'));
-      document.getElementById(tab.dataset.target)
-              .classList.remove('is-hidden');
+      document.getElementById(tab.dataset.target).classList.remove('is-hidden');
     });
   });
 }
 
-async function loadUsers() {
+async function loadUsers(token) {
   const res = await fetch(`${API_BASE}/admin/users`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    headers: { Authorization: `Bearer ${token}` }
   });
-  if (!res.ok) throw new Error('Erreur chargement utilisateurs');
+  if (!res.ok) { const e = new Error(res.statusText); e.status = res.status; throw e; }
   const users = await res.json();
 
   const tbody = document.getElementById('users-tbody');
   tbody.innerHTML = '';
   users.forEach(u => {
+    const [last, first] = u.Pseudo.split(' ');
     const tr = document.createElement('tr');
     tr.dataset.id = u.ID_personne;
     tr.innerHTML = `
-      <td>${u.Pseudo.split(' ')[0] || u.Pseudo}</td>
-      <td>${u.Pseudo.split(' ')[1] || ''}</td>
+      <td>${last}</td>
+      <td>${first||''}</td>
       <td>${u.Email}</td>
       <td>${roleLabel(u.Role_User)}</td>
       <td>
@@ -50,18 +54,17 @@ async function loadUsers() {
     tbody.appendChild(tr);
   });
 
-  // attach per-row handlers
   document.querySelectorAll('.btn-edit-user')
-    .forEach(btn => btn.addEventListener('click', onEditUser));
+          .forEach(btn => btn.addEventListener('click', onEditUser));
   document.querySelectorAll('.btn-delete-user')
-    .forEach(btn => btn.addEventListener('click', onDeleteUser));
+          .forEach(btn => btn.addEventListener('click', onDeleteUser));
 }
 
-async function loadCards() {
+async function loadCards(token) {
   const res = await fetch(`${API_BASE}/questions`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    headers: { Authorization: `Bearer ${token}` }
   });
-  if (!res.ok) throw new Error('Erreur chargement cartes');
+  if (!res.ok) { const e = new Error(res.statusText); e.status = res.status; throw e; }
   const cards = await res.json();
 
   const tbody = document.getElementById('cards-tbody');
@@ -80,65 +83,81 @@ async function loadCards() {
   });
 
   document.querySelectorAll('.btn-edit-card')
-    .forEach(btn => btn.addEventListener('click', onEditCard));
+          .forEach(btn => btn.addEventListener('click', onEditCard));
   document.querySelectorAll('.btn-delete-card')
-    .forEach(btn => btn.addEventListener('click', onDeleteCard));
+          .forEach(btn => btn.addEventListener('click', onDeleteCard));
 }
 
-function roleLabel(code) {
-  return { 0: 'Admin', 1: 'Enseignant', 2: 'Utilisateur' }[code] || 'Inconnu';
+function onEditUser(e) {
+  openModal('user-modal', 'Modifier un utilisateur');
+  const tr = e.target.closest('tr');
+  const form = document.getElementById('user-form');
+  form.dataset.id = tr.dataset.id;
+  form.lastName.value  = tr.children[0].textContent;
+  form.firstName.value = tr.children[1].textContent;
+  form.email.value     = tr.children[2].textContent;
+  form.role.value      = roleCode(tr.children[3].textContent);
 }
 
+function onDeleteUser(e) {
+  const tr = e.target.closest('tr');
+  const id = tr.dataset.id;
+  if (!confirm('Supprimer cet utilisateur ?')) return;
+  const token = localStorage.getItem('token');
+  fetch(`${API_BASE}/admin/users/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(r => {
+      if (!r.ok) throw new Error(r.statusText);
+      tr.remove();
+    })
+    .catch(err => alert('Erreur suppression : ' + err.message));
+}
+
+function onEditCard(e) {
+  openModal('card-modal', 'Modifier une carte');
+  const tr = e.target.closest('tr');
+  const form = document.getElementById('card-form');
+  form.dataset.id = tr.dataset.id;
+  form.question.value = tr.children[0].textContent;
+  form.answer.value   = tr.children[1].textContent;
+}
+
+function onDeleteCard(e) {
+  const tr = e.target.closest('tr');
+  const id = tr.dataset.id;
+  if (!confirm('Supprimer cette carte ?')) return;
+  const token = localStorage.getItem('token');
+  fetch(`${API_BASE}/questions/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(r => {
+      if (!r.ok) throw new Error(r.statusText);
+      tr.remove();
+    })
+    .catch(err => alert('Erreur suppression : ' + err.message));
+}
 
 function initModals() {
-  const userModal = document.getElementById('user-modal');
-  const cardModal = document.getElementById('card-modal');
-  const userForm  = document.getElementById('user-form');
-  const cardForm  = document.getElementById('card-form');
-
-  // Open Add
   document.getElementById('add-user')
-    .addEventListener('click', () => openUserModal());
+          .addEventListener('click', () => openModal('user-modal','Ajouter un utilisateur'));
   document.getElementById('add-card')
-    .addEventListener('click', () => openCardModal());
-
-  // Cancel buttons
+          .addEventListener('click', () => openModal('card-modal','Ajouter une carte'));
   document.querySelectorAll('.btn-cancel')
-    .forEach(b => b.addEventListener('click', closeAllModals));
+          .forEach(b => b.addEventListener('click', closeAllModals));
 
-  // Submit forms
-  userForm.addEventListener('submit', onSubmitUser);
-  cardForm.addEventListener('submit', onSubmitCard);
+  // you can hook your form submit here:
+  // document.getElementById('user-form').addEventListener('submit', onSubmitUser);
+  // document.getElementById('card-form').addEventListener('submit', onSubmitCard);
 }
 
-
-let editingUserId = null;
-function openUserModal(editData = {}) {
-  editingUserId = editData.id || null;
-  const m = document.getElementById('user-modal');
-  m.querySelector('#user-modal-title').textContent =
-    editingUserId ? 'Modifier un utilisateur' : 'Ajouter un utilisateur';
-
-  const f = m.querySelector('form');
-  f.lastName.value  = editData.lastName  || '';
-  f.firstName.value = editData.firstName || '';
-  f.email.value     = editData.email     || '';
-  f.role.value      = editData.role      || '2';
-
-  m.classList.add('active');
-}
-
-let editingCardId = null;
-function openCardModal(editData = {}) {
-  editingCardId = editData.id || null;
-  const m = document.getElementById('card-modal');
-  m.querySelector('#card-modal-title').textContent =
-    editingCardId ? 'Modifier une carte' : 'Ajouter une carte';
-
-  const f = m.querySelector('form');
-  f.question.value = editData.question || '';
-  f.answer.value   = editData.answer   || '';
-
+function openModal(modalId, title) {
+  const m = document.getElementById(modalId);
+  m.querySelector('h3').textContent = title;
+  m.querySelector('form').reset();
+  delete m.querySelector('form').dataset.id;
   m.classList.add('active');
 }
 
@@ -146,88 +165,9 @@ function closeAllModals() {
   document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
 }
 
-
-// ———————————— CRUD Handlers ————————————
-
-async function onSubmitUser(ev) {
-  ev.preventDefault();
-  const f = ev.target;
-  const payload = {
-    username: `${f.lastName.value} ${f.firstName.value}`,
-    email:    f.email.value,
-    role:     Number(f.role.value),
-    password: 'ChangeMe123'  // backend requires password; prompt admin to reset later
-  };
-
-  const url = editingUserId
-    ? `${API_BASE}/admin/users/${editingUserId}`
-    : `${API_BASE}/admin/users`;
-  const method = editingUserId ? 'PUT' : 'POST';
-
-  const res = await fetch(url, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem('token')}`
-    },
-    body: JSON.stringify(payload)
-  });
-  if (!res.ok) {
-    alert('Erreur sauvegarde utilisateur');
-    return;
-  }
-  closeAllModals();
-  await loadUsers();
+function roleLabel(code) {
+  return { 0: 'Admin', 1: 'Enseignant', 2: 'Utilisateur' }[code] || 'N/A';
 }
-
-async function onDeleteUser(ev) {
-  const tr = ev.target.closest('tr');
-  if (!confirm('Confirmer la suppression ?')) return;
-  const id = tr.dataset.id;
-  await fetch(`${API_BASE}/admin/users/${id}`, {
-    method: 'DELETE',
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-  });
-  await loadUsers();
-}
-
-
-async function onSubmitCard(ev) {
-  ev.preventDefault();
-  const f = ev.target;
-  const payload = {
-    title:   f.question.value,
-    content: f.answer.value
-  };
-
-  const url = editingCardId
-    ? `${API_BASE}/questions/${editingCardId}`
-    : `${API_BASE}/questions`;
-  const method = editingCardId ? 'PUT' : 'POST';
-
-  const res = await fetch(url, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem('token')}`
-    },
-    body: JSON.stringify(payload)
-  });
-  if (!res.ok) {
-    alert('Erreur sauvegarde carte');
-    return;
-  }
-  closeAllModals();
-  await loadCards();
-}
-
-async function onDeleteCard(ev) {
-  const tr = ev.target.closest('tr');
-  if (!confirm('Confirmer la suppression ?')) return;
-  const id = tr.dataset.id;
-  await fetch(`${API_BASE}/questions/${id}`, {
-    method: 'DELETE',
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-  });
-  await loadCards();
+function roleCode(label) {
+  return { 'Admin':0, 'Enseignant':1, 'Utilisateur':2 }[label] ?? 2;
 }
