@@ -167,8 +167,6 @@ a {
   text-align: center;
 }
 .how__image img {
-  width: min(80vw, 220px);
-  height: auto;
   display: block;
   margin: 0 auto;
 }
